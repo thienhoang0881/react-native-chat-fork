@@ -18,6 +18,7 @@ import { MessageImage, MessageImageProps } from './MessageImage'
 import { MessageVideo } from './MessageVideo'
 import { MessageAudio } from './MessageAudio'
 import { Time, TimeProps } from './Time'
+import { StatusProps } from './Status'
 
 import Color from './Color'
 import { StylePropType, isSameUser, isSameDay } from './utils'
@@ -164,6 +165,7 @@ export interface BubbleProps<TMessage extends IMessage> {
   renderQuickReplies?(
     quickReplies: QuickRepliesProps<TMessage>,
   ): React.ReactNode
+  renderStatus?(status: StatusProps<TMessage>): React.ReactNode
 }
 
 export default class Bubble<
@@ -184,6 +186,7 @@ export default class Bubble<
     renderTicks: null,
     renderTime: null,
     renderQuickReplies: null,
+    renderStatus: null,
     onQuickReply: null,
     position: 'left',
     optionTitles: DEFAULT_OPTION_TITLES,
@@ -218,6 +221,7 @@ export default class Bubble<
     renderTime: PropTypes.func,
     renderTicks: PropTypes.func,
     renderQuickReplies: PropTypes.func,
+    renderStatus: PropTypes.func,
     onQuickReply: PropTypes.func,
     position: PropTypes.oneOf(['left', 'right']),
     optionTitles: PropTypes.arrayOf(PropTypes.string),
@@ -485,6 +489,12 @@ export default class Bubble<
     return null
   }
 
+  renderStatus() {
+    if (this.props.renderStatus) {
+      return this.props.renderStatus(this.props)
+    }
+  }
+
   renderBubbleContent() {
     return this.props.isCustomViewBottom ? (
       <View>
@@ -549,6 +559,7 @@ export default class Bubble<
           </TouchableWithoutFeedback>
         </View>
         {this.renderQuickReplies()}
+        {this.renderStatus()}
       </View>
     )
   }
